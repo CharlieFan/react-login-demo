@@ -12,22 +12,24 @@ export default class Signup extends Component {
 
         this.state = {
             username: '',
+            nickname: '',
             password: '',
             confirm: '',
             emailHasError: null,
+            nicknameHasError: null,
             passwordHasError: null,
             confirmHasError: null
         }
     }
 
     handleSubmit() {
-        if (!this.validateEmail() || !this.validatePassword() || !this.validateConfirm()) return
+        if (!this.validateEmail() || !this.validateNickName() || !this.validatePassword() || !this.validateConfirm()) return
 
-        let {username, password} = this.state
+        let {username, password, nickname} = this.state
         password = md5(password).toString()
 
         // TODO: Call API
-        console.log(username, password)
+        console.log(username, password, nickname)
     }
 
     validateEmail() {
@@ -44,8 +46,24 @@ export default class Signup extends Component {
             })
             return true
         }
-
     }
+
+    validateNickName() {
+        let { nickname } = this.state
+        if (!nickname) {
+            this.setState({
+                nicknameHasError: 'error'
+            })
+            return false
+        } else {
+            this.setState({
+                nicknameHasError: null
+            })
+            return true
+        }
+    }
+
+    
 
     validatePassword() {
         let password = this.state.password
@@ -108,6 +126,21 @@ export default class Signup extends Component {
 
                         { this.state.emailHasError === 'error' ?
                             <ControlLabel>Invalid email</ControlLabel> : 
+                            ''
+                        }
+                    </FormGroup>
+
+                    <FormGroup validationState={this.state.nicknameHasError}>
+                        <FormControl type="text"
+                            name="nickname"
+                            maxLength={24}
+                            onChange={(e) => {
+                                this.handleChange(e)
+                            }}
+                            placeholder="Create a Nickname" />
+
+                        {   this.state.nicknameHasError === 'error' ?
+                            <ControlLabel>Please create your nickname</ControlLabel> : 
                             ''
                         }
                     </FormGroup>

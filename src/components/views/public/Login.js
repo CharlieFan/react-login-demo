@@ -59,7 +59,7 @@ export default class Login extends Component {
     validatePassword() {
         let password = this.state.password
 
-        if (!password || password.length < 8) {
+        if (!password) {
             this.setState({
                 passwordHasError: 'error'
             })
@@ -106,7 +106,7 @@ export default class Login extends Component {
                                 this.handleChange(e)
                             }}/>
                         { this.state.passwordHasError === 'error' ?
-                            <ControlLabel>Please input a password with at least 8 characters</ControlLabel> : 
+                            <ControlLabel>Please input your password</ControlLabel> : 
                             ''
                         }
                     </FormGroup>
