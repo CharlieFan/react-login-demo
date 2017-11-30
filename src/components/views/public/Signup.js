@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import validator from 'validator'
+import validator from '../../../utils/validator'
 import md5 from 'crypto-js/md5'
 
 // Components:
@@ -11,100 +11,122 @@ export default class Signup extends Component {
         super(props)
 
         this.state = {
-            username: '',
-            nickname: '',
-            password: '',
-            confirm: '',
-            emailHasError: null,
-            nicknameHasError: null,
-            passwordHasError: null,
-            confirmHasError: null
+            formData: {
+                username: {
+                    value: '',
+                    touched: false,
+                    rules: {
+                        required: true,
+                        isEmail: true
+                    },
+                    isValid: false
+                },
+                nickname: {
+                    value: '',
+                    touched: false,
+                    rules: {
+                        required: true
+                    },
+                    isValid: false
+                },
+                password:{
+                    value: '',
+                    touched: false,
+                    rules: {
+                        required: true,
+                        minLength: 8
+                    },
+                    isValid: false
+                },
+            },
+            confirm: {
+                value: '',
+                touched: false,
+                isValid: false
+            },
+            isShowError: false
         }
+    }
+
+    validateForm() {
+        let isValid = true
+        for(let prop in this.state.formData) {
+            if (this.state.formData[prop]) {
+                let { value, rules } = this.state.formData[prop]
+                isValid = isValid && validator(value, rules)
+            }
+        }
+
+        isValid = isValid && this.state.confirm.isValid
+
+        this.setState({
+            isShowError: true
+        })
+        return isValid
     }
 
     handleSubmit() {
-        if (!this.validateEmail() || !this.validateNickName() || !this.validatePassword() || !this.validateConfirm()) return
+        if (!this.validateForm()) {
+            return false
+        }
 
-        let {username, password, nickname} = this.state
-        password = md5(password).toString()
+        let {username, password, nickname} = this.state.formData
+        let cryptedPassword = md5(password.value).toString()
 
+        let postFormData = {
+            username: username.value,
+            password: cryptedPassword,
+            nickname: nickname.value
+        }
         // TODO: Call API
-        console.log(username, password, nickname)
+        console.log(postFormData)
     }
 
-    validateEmail() {
-        let email = this.state.username
+    handleConfirm(event) {
+        let value = event.target.value
+        let isValid = value === this.state.formData.password.value
+        console.log(isValid)
+        
 
-        if (!email || !validator.isEmail(email)) {
-            this.setState({
-                emailHasError: 'error'
-            })
-            return false
-        } else {
-            this.setState({
-                emailHasError: null
-            })
-            return true
-        }
-    }
-
-    validateNickName() {
-        let { nickname } = this.state
-        if (!nickname) {
-            this.setState({
-                nicknameHasError: 'error'
-            })
-            return false
-        } else {
-            this.setState({
-                nicknameHasError: null
-            })
-            return true
-        }
-    }
-
-    
-
-    validatePassword() {
-        let password = this.state.password
-
-        if (!password || password.length < 8) {
-            this.setState({
-                passwordHasError: 'error'
-            })
-            return false
-        } else {
-            this.setState({
-                passwordHasError: null
-            })
-            return true
-        }
-    }
-
-    validateConfirm() {
-        let confirm = this.state.confirm
-        if (confirm !== this.state.password) {
-            this.setState({
-                confirmHasError: 'error'
-            })
-            return false
-        } else {
-            this.setState({
-                confirmHasError: null
-            })
-            return true
-        }
+        this.setState({
+            ...this.state,
+            confirm: {
+                value,
+                touched: true,
+                isValid
+            }
+        })
     }
 
     handleChange(event) {
         let name = event.target.name
         let value = event.target.value
         let data = {}
-        data[name] = value
-        
+        data[name] = {
+            ...this.state.formData[name],
+            value,
+            touched: true,
+            isValid: validator(value, this.state.formData[name].rules)
+        }
+
         this.setState({
-            ...data
+            formData: {
+                ...this.state.formData,
+                ...data
+            }
         })
+    }
+
+    whetherShowError(data) {
+        let {touched, isValid} = data
+
+        if (this.state.isShowError && !isValid) {
+            return 'error'
+        }
+
+        if (!touched || isValid ) return null
+
+        return 'error'
     }
 
     render() {
@@ -116,21 +138,26 @@ export default class Signup extends Component {
                         e.preventDefault()
                         this.handleSubmit()
                     }}>
-                    <FormGroup validationState={this.state.emailHasError}>
+                    <FormGroup validationState={
+                        this.whetherShowError(this.state.formData.username)
+                    }>
                         <FormControl type="text"
                             name="username"
                             onChange={(e) => {
                                 this.handleChange(e)
                             }}
-                            placeholder="Input Your Username or Email" />
+                            placeholder="Enter Your Email or Username" />
 
-                        { this.state.emailHasError === 'error' ?
-                            <ControlLabel>Invalid email</ControlLabel> : 
-                            ''
+                        {
+                            this.whetherShowError(this.state.formData.username) === 'error' ?
+                            <ControlLabel>email is required and should be valid</ControlLabel> : 
+                            null
                         }
                     </FormGroup>
 
-                    <FormGroup validationState={this.state.nicknameHasError}>
+                     <FormGroup validationState={
+                        this.whetherShowError(this.state.formData.nickname)
+                    }>
                         <FormControl type="text"
                             name="nickname"
                             maxLength={24}
@@ -139,33 +166,38 @@ export default class Signup extends Component {
                             }}
                             placeholder="Create a Nickname" />
 
-                        {   this.state.nicknameHasError === 'error' ?
+                        {   this.whetherShowError(this.state.formData.nickname) === 'error' ?
                             <ControlLabel>Please create your nickname</ControlLabel> : 
                             ''
                         }
                     </FormGroup>
 
-                    <FormGroup validationState={this.state.passwordHasError}>
+                    <FormGroup validationState={
+                        this.whetherShowError(this.state.formData.password)
+                    }>
                         <FormControl type="password"
                             name="password"
                             onChange={(e) => {
                                 this.handleChange(e)
                             }}
                             placeholder="New password"/>
-                        { this.state.passwordHasError === 'error' ?
+                        { this.whetherShowError(this.state.formData.password) === 'error' ?
                             <ControlLabel>Please input a password with at least 8 characters</ControlLabel> : 
                             ''
                         }
                     </FormGroup>
 
-                    <FormGroup validationState={this.state.confirmHasError}>
+                    <FormGroup validationState={
+                        this.whetherShowError(this.state.confirm)
+                    }>
                         <FormControl type="password"
                             name="confirm"
                             onChange={(e) => {
-                                this.handleChange(e)
+                                this.handleConfirm(e)
                             }}
                             placeholder="Confirm password"/>
-                        { this.state.confirmHasError === 'error' ?
+                        {
+                            this.whetherShowError(this.state.confirm) === 'error' ?
                             <ControlLabel>confirm password does not match</ControlLabel> : 
                             ''
                         }

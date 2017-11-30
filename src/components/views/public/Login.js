@@ -7,15 +7,11 @@ import { Link } from 'react-router-dom'
 import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
 
 export default class Login extends Component {
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            username: '',
-            password: '',
-            emailHasError: null,
-            passwordHasError: null
-        }
+    state = {
+        username: '',
+        password: '',
+        emailHasError: null,
+        passwordHasError: null
     }
 
     handleSubmit() {
@@ -71,7 +67,6 @@ export default class Login extends Component {
             return true
         }
     }
-    
 
     render() {
         return (
