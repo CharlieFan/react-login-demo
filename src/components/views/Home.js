@@ -50,9 +50,6 @@ class PageCombo extends Component {
 
     initItems = (page, total) => {
         let pageItems = []
-        let center = Math.ceil(total / 2)
-        const limit = 9
-        // console.log(center)
 
         if (total <= 10) {
             for(let i = 1; i <= total; i++) {
@@ -202,28 +199,42 @@ export default class Home extends Component {
                 ...this.state.pageInfo,
                 page: value
             }
+        }, function(){
+            let query = this.state.pageInfo
+            console.log("call api use query:", query)
         })
-
-        console.log("call api here")
-        
     }
     
     render() {
         return (
             <div>
-                <h1>Home page</h1>
+                <h1>current page: {this.state.pageInfo.page}</h1>
                 <Table striped bordered condensed hover>
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
+                            <th>column1</th>
+                            <th>column2</th>
+                            <th>column3</th>
+                            <th>column4</th>
+                            <th>column5</th>
+                            <th>column6</th>
+                            <th>column7</th>
+                            <th>column8</th>
+                            <th>column9</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1</td>
+                            <td>
+                                <img src="https://dx5vpyka4lqst.cloudfront.net/products/438457/images/thumb.png" alt=""/>
+                            </td>
                             <td>Craig</td>
+                            <td>Mcmorris</td>
+                            <td>Mcmorris</td>
+                            <td>Mcmorris</td>
+                            <td>Mcmorris</td>
+                            <td>Mcmorris</td>
+                            <td>Mcmorris</td>
                             <td>Mcmorris</td>
                         </tr>
                     </tbody>
