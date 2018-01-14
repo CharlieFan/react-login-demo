@@ -4,12 +4,12 @@
 
 .App-logo {
     animation: App-logo-spin infinite 2s linear;
-    height: 80px;
+    height: 50px;
 }
 
 .App-header {
     background-color: #222;
-    height: 100px;
+    height: 70px;
     padding: 10px;
     color: white;
 }
@@ -26,6 +26,37 @@
     max-width: 350px;
     margin: 15px auto;
     text-align: left;
+}
+
+.home-header {
+    position: relative;
+}
+
+.home-header span {
+    color: #337ab7;
+}
+
+.home-header button {
+    position: absolute;
+    right: 30px;
+}
+
+.searchbox {
+    width: 45%;
+    margin: 30px auto;
+}
+
+.searchbox .form-group {
+    display: flex;
+}
+
+.searchbox .form-group input {
+    width: 100%;
+}
+
+.searchbox .form-group button {
+    width: 160px;
+    margin-left: 10px;
 }
 
 h1 {

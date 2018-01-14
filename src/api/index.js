@@ -1,34 +1,31 @@
 import axios from 'axios'
 
-function buildHttpHeader() {
-    return {}
-}
-
 let myAxios = axios.create({
-    baseURL: 'https://BaseURLHERE/',
+    baseURL: 'http://sdchallenge.com:8080',
     timeout: 20000,
     responseType: 'json',
-    // TODO: Add header config
-    headers: buildHttpHeader()
+    // Add header config
+    headers: {
+        "Content-Type": "application/json"
+    }
 })
 
 function processData(data = {}) {
-    // TODO APPEND TOKEN to data maybe?
     return JSON.stringify(data)
 }
 
 function getToken() {
-    return 'need token here'
+    return localStorage.getItem('token')
 }
 
 export function apiGet(url, params) {
     return myAxios.get(url, {
         params: processData(params),
         headers: {
-            'token': getToken()
+            'Authorization': getToken()
         }
     }).then((res) => {
-        return res.data
+        return res
     }).catch((err) => {
         // TODO: add err handler
         throw err
@@ -36,11 +33,7 @@ export function apiGet(url, params) {
 }
 
 export function apiPost(url, data) {
-    return myAxios.post(url, processData(data), {
-        headers: {
-            'token': 'need token here'
-        }
-    }).then((res) => {
+    return myAxios.post(url, processData(data)).then((res) => {
         return res.data
     }).catch((err) => {
         // TODO: add error handler

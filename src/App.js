@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import logo from './logo.svg'
 import './App.css'
-import { BrowserRouter, Route, Switch} from 'react-router-dom'
+import { BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
 
 // Components:
 import Login from './components/views/public/Login'
 import Signup from './components/views/public/Signup'
-import Home from './components/views/Home'
+import Home from './components/views/Home/Home'
 
+const token = localStorage.getItem('token')
 
 class App extends Component {
     render() {
@@ -20,7 +21,15 @@ class App extends Component {
                 {/* Routers here: */}
                 <BrowserRouter>
                     <Switch>
-                        <Route path="/home" component={Home}></Route>
+                        <Route path="/home" render={
+                            (props) => {
+                                if (token) {
+                                    return <Home {...props} /> 
+                                } else {
+                                    return <Redirect to="/"/>
+                                }
+                            }
+                        }></Route>
                         <Route path="/signup" component={Signup}></Route>
                         <Route path="/" component={Login}></Route>
                     </Switch>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import validator from '../../../utils/validator'
-import md5 from 'crypto-js/md5'
+import api from '../../../api/modules'
 
 // Components:
 import { Link } from 'react-router-dom'
@@ -71,21 +71,27 @@ export default class Signup extends Component {
         }
 
         let {username, password, nickname} = this.state.formData
-        let cryptedPassword = md5(password.value).toString()
 
         let postFormData = {
-            username: username.value,
-            password: cryptedPassword,
+            email: username.value,
+            password: password.value,
             nickname: nickname.value
         }
         // TODO: Call API
-        console.log(postFormData)
+        // console.log(postFormData)
+        api.user.signup(postFormData).then(res => {
+            console.log(res)
+            let { authToken } = res
+            // let token  = localStorage.getItem('token')
+            localStorage.setItem('token', authToken)
+            window.location.href="/home"
+        })
     }
 
     handleConfirm(event) {
         let value = event.target.value
         let isValid = value === this.state.formData.password.value
-        console.log(isValid)
+        // console.log(isValid)
         
 
         this.setState({
