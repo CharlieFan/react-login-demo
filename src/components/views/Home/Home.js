@@ -45,6 +45,7 @@ export default class Home extends Component {
             }
         }, function(){
             let query = this.state.pageInfo
+            // TODO: Call API Here:
             console.log("call api use query:", query)
         })
     }
@@ -62,8 +63,10 @@ export default class Home extends Component {
 
     handleLogout() {
         // console.log('log me out!')
-        localStorage.removeItem('token')
-        window.location.href = '/'
+        api.user.logout().then(res => {
+            localStorage.removeItem('token')
+            // window.location.href = '/'
+        })
     }
 
     componentDidMount() {

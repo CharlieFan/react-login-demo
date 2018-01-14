@@ -6,7 +6,10 @@ export default {
             return apiPost('/authentication/signup', data)
         },
         login(data) {
-            return apiPost('loginUrl', data)
+            return apiPost('/authentication/login', data)
+        },
+        logout() {
+            return apiPost('/authentication/logout', {}, true)
         }
     },
     home: {

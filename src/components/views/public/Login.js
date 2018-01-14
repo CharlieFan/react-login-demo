@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import validator from 'validator'
-import md5 from 'crypto-js/md5'
+import api from '../../../api/modules'
+// import md5 from 'crypto-js/md5'
 
 // Components:
 import { Link } from 'react-router-dom'
@@ -18,10 +19,22 @@ export default class Login extends Component {
         if (!this.validateEmail() || !this.validatePassword()) return
 
         let {username, password} = this.state
-        password = md5(password).toString()
+        let formData = {
+            username,
+            password
+        }
 
         // TODO: Call API
-        console.log(username, password)
+        // console.log(formData)
+        api.user.login(formData).then(res => {
+            let { authToken } = res
+            if (localStorage.getItem('token')) {
+                localStorage.removeItem('token')
+            }
+            
+            localStorage.setItem('token', authToken)
+            window.location.href = '/home'
+        })
     }
 
     handleChange(event) {

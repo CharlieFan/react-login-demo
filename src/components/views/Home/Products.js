@@ -8,7 +8,7 @@ const Products = (props) => {
         return (
             <tr key={k}>
                 <td>
-                    <img width="100px" src={item.image_thumb_url} alt={`pic-${k}`}/>
+                    <img width="50px" src={item.image_thumb_url} alt={`pic-${k}`}/>
                 </td>
                 <td>{item.name}</td>
                 <td>{item.price}</td>
