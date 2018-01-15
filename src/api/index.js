@@ -20,16 +20,20 @@ function processData(data = {}) {
 }
 
 
-export function apiGet(url, params) {
+export function apiGet(url, query) {
     return myAxios.get(url, {
-        params: processData(params),
+        params: query,
         headers: {
-            'Authorization': getToken()
+            'Authorization': `Bearer ${getToken()}`
         }
     }).then((res) => {
-        return res
+        return res.data
     }).catch((err) => {
         // TODO: add err handler
+        if (err.response.status === 401) {
+            localStorage.removeItem('token')
+            window.location.href = '/'
+        }
         throw err
     })
 }
@@ -42,18 +46,21 @@ export function apiPost(url, data, header = false) {
     if (header) {
         requestHeaders["Authorization"] = `Bearer ${getToken()}`
     }
-    // console.log(data)
-    // console.log(requestHeaders)
 
-    // return myAxios.post(url, processData(data))
     return myAxios.post(url, processData(data), {
         headers: requestHeaders
     })
     .then((res) => {
-        return res
+        return res.data
     })
     .catch((err) => {
         // TODO: add error handler
+        console.log(err)
+        if (err.response.status === 401) {
+            localStorage.removeItem('token')
+            window.location.href = '/'
+        }
+        
         throw err
     })
 }

@@ -13,8 +13,12 @@ export default {
         }
     },
     home: {
-        fetchAlcohol() {
-            return apiGet('/products')
+        getAlcohol(query, page = 1) {
+            
+            return apiGet('/lcbo/search', {
+                q: query,
+                page: page
+            })
         }
     }
 }

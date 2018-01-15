@@ -20,7 +20,7 @@ export default class Login extends Component {
 
         let {username, password} = this.state
         let formData = {
-            username,
+            email: username,
             password
         }
 

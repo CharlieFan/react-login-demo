@@ -1,38 +1,23 @@
 import React, { Component } from 'react'
 import api from '../../../api/modules'
 import { Button, FormGroup, FormControl } from 'react-bootstrap'
-
 import Products from './Products'
 import PageCombo from '../../tags/PageCombo'
 
 export default class Home extends Component {
     state = {
         pageInfo: {
-            page: 7,
-            total: 15
+            page: 1,
+            total: 1
         },
         data: [
-            {
-                image_thumb_url: 'https://dx5vpyka4lqst.cloudfront.net/products/438457/images/thumb.png',
-                name: 'hahha',
-                price: '4456',
-                package: 'hahahahh',
-                producer_name: 'lmao'
-            },
-            {
-                image_thumb_url: 'https://dx5vpyka4lqst.cloudfront.net/products/438457/images/thumb.png',
-                name: 'hahha',
-                price: '4456',
-                package: 'hahahahh',
-                producer_name: 'lmao'
-            },
-            {
-                image_thumb_url: 'https://dx5vpyka4lqst.cloudfront.net/products/438457/images/thumb.png',
-                name: 'hahha',
-                price: '4456',
-                package: 'hahahahh',
-                producer_name: 'lmao'
-            }
+            // {
+            //     image_thumb_url: 'https://dx5vpyka4lqst.cloudfront.net/products/438457/images/thumb.png',
+            //     name: 'hahha',
+            //     price: '4456',
+            //     package: 'hahahahh',
+            //     producer_name: 'lmao'
+            // }
         ],
         searchText: ''
     }
@@ -44,14 +29,39 @@ export default class Home extends Component {
                 page: value
             }
         }, function(){
-            let query = this.state.pageInfo
+            let page = this.state.pageInfo.page
             // TODO: Call API Here:
-            console.log("call api use query:", query)
+            this.updateList(this.state.searchText, page)
         })
     }
 
     handleSearch() {
-        console.log('search:', this.state.searchText)
+        let query = this.state.searchText
+
+        this.updateList(query)
+    }
+
+    updateList(query = '', page = 1) {
+        api.home.getAlcohol(query, page).then(res => {
+            let list = res.result.map(product => {
+                return {
+                    image_thumb_url: product.image_thumb_url,
+                    name: product.name,
+                    price: ( product.price_in_cents / 100).toFixed(2),
+                    'package': product.package,
+                    producer_name: product.producer_name
+                }
+            })
+            let pager = {
+                page: res.pager.current_page,
+                total: res.pager.total_pages
+            }
+            this.setState({
+                ...this.state,
+                data: [...list],
+                pageInfo: {...pager}
+            })
+        })
     }
 
     handleChange(value) {
@@ -65,11 +75,15 @@ export default class Home extends Component {
         // console.log('log me out!')
         api.user.logout().then(res => {
             localStorage.removeItem('token')
-            // window.location.href = '/'
+            window.location.href = '/'
+        }).catch(err => {
+            localStorage.removeItem('token')
+            window.location.href = '/'
         })
     }
 
     componentDidMount() {
+        // CALL API HERE:
         // api.home.fetchAlcohol()
     }
     
