@@ -6,7 +6,7 @@ let getToken = () => {
 }
 
 let myAxios = axios.create({
-    baseURL: 'http://sdchallenge.com:8080',
+    baseURL: 'http://localhost:8080',
     timeout: 20000,
     responseType: 'json',
 })
@@ -26,10 +26,15 @@ export function apiGet(url, query = null) {
         return res.data
     }).catch((err) => {
         // TODO: add err handler
+        if (!err.response) {
+            throw err
+        }
+
         if (err.response.status === 401) {
             localStorage.removeItem('token')
             window.location.href = '/'
         }
+
         throw err
     })
 }
@@ -51,11 +56,15 @@ export function apiPost(url, data, header = false) {
     })
     .catch((err) => {
         // TODO: add error handler
+        if (!err.response) {
+            throw err
+        }
+
         if (err.response.status === 401) {
             localStorage.removeItem('token')
             window.location.href = '/'
         }
-        
+
         throw err
     })
 }
