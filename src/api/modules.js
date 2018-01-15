@@ -10,6 +10,9 @@ export default {
         },
         logout() {
             return apiPost('/authentication/logout', {}, true)
+        },
+        getUserInfo() {
+            return apiGet('/user/user_information')
         }
     },
     home: {

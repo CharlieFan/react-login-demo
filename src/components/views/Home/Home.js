@@ -19,7 +19,8 @@ export default class Home extends Component {
             //     producer_name: 'lmao'
             // }
         ],
-        searchText: ''
+        searchText: '',
+        nickname: ''
     }
 
     handlePage = (value) => {
@@ -83,16 +84,22 @@ export default class Home extends Component {
     }
 
     componentDidMount() {
-        // CALL API HERE:
-        // api.home.fetchAlcohol()
+        // CALL get user info API HERE:
+        api.user.getUserInfo().then(res => {
+            let { nickname } = res
+            this.setState({
+                ...this.state,
+                nickname
+            })
+        })
     }
     
     render() {
         return (
             <div>
                 <h1 className="home-header">
-                    Hello! 
-                    <span> { 'User somebody' }</span>
+                    Hello, 
+                    <span> { this.state.nickname }</span>!
                     <Button bsStyle="danger"
                         onClick={(e) => {
                             this.handleLogout()

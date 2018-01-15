@@ -16,7 +16,7 @@ function processData(data = {}) {
 }
 
 
-export function apiGet(url, query) {
+export function apiGet(url, query = null) {
     return myAxios.get(url, {
         params: query,
         headers: {
