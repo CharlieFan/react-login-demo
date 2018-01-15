@@ -1,49 +1,61 @@
 import axios from 'axios'
 
-function buildHttpHeader() {
-    return {}
+let getToken = () => {
+    let token = localStorage.getItem('token')
+    return token
 }
 
 let myAxios = axios.create({
-    baseURL: 'https://BaseURLHERE/',
+    baseURL: 'http://sdchallenge.com:8080',
     timeout: 20000,
     responseType: 'json',
-    // TODO: Add header config
-    headers: buildHttpHeader()
 })
 
 function processData(data = {}) {
-    // TODO APPEND TOKEN to data maybe?
     return JSON.stringify(data)
 }
 
-function getToken() {
-    return 'need token here'
-}
 
-export function apiGet(url, params) {
+export function apiGet(url, query = null) {
     return myAxios.get(url, {
-        params: processData(params),
+        params: query,
         headers: {
-            'token': getToken()
+            'Authorization': `Bearer ${getToken()}`
         }
     }).then((res) => {
         return res.data
     }).catch((err) => {
         // TODO: add err handler
+        if (err.response.status === 401) {
+            localStorage.removeItem('token')
+            window.location.href = '/'
+        }
         throw err
     })
 }
 
-export function apiPost(url, data) {
+export function apiPost(url, data, header = false) {
+    let requestHeaders = {
+        "Content-Type": "application/json"
+    }
+    
+    if (header) {
+        requestHeaders["Authorization"] = `Bearer ${getToken()}`
+    }
+
     return myAxios.post(url, processData(data), {
-        headers: {
-            'token': 'need token here'
-        }
-    }).then((res) => {
+        headers: requestHeaders
+    })
+    .then((res) => {
         return res.data
-    }).catch((err) => {
+    })
+    .catch((err) => {
         // TODO: add error handler
+        if (err.response.status === 401) {
+            localStorage.removeItem('token')
+            window.location.href = '/'
+        }
+        
         throw err
     })
 }

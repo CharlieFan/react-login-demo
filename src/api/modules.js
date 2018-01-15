@@ -3,18 +3,25 @@ import {apiGet, apiPost} from './index'
 export default {
     user: {
         signup(data) {
-            return apiPost('url here', data)
+            return apiPost('/authentication/signup', data)
         },
         login(data) {
-            return apiPost('loginUrl', data)
+            return apiPost('/authentication/login', data)
         },
         logout() {
-            return apiPost('logoutUrl', data)
+            return apiPost('/authentication/logout', {}, true)
         },
+        getUserInfo() {
+            return apiGet('/user/user_information')
+        }
     },
     home: {
-        fetchAlcohol() {
-            return apiGet('getDataUrl')
+        getAlcohol(query, page = 1) {
+            
+            return apiGet('/lcbo/search', {
+                q: query,
+                page: page
+            })
         }
     }
 }
