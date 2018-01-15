@@ -9,10 +9,6 @@ let myAxios = axios.create({
     baseURL: 'http://sdchallenge.com:8080',
     timeout: 20000,
     responseType: 'json',
-    // Add header config
-    // headers: {
-    //     "Content-Type": "application/json",
-    // }
 })
 
 function processData(data = {}) {
@@ -55,7 +51,6 @@ export function apiPost(url, data, header = false) {
     })
     .catch((err) => {
         // TODO: add error handler
-        console.log(err)
         if (err.response.status === 401) {
             localStorage.removeItem('token')
             window.location.href = '/'
